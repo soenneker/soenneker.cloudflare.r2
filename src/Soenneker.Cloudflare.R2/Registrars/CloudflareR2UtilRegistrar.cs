@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Soenneker.Aws.Signing.V4.Registrars;
 using Soenneker.Cloudflare.R2.Abstract;
 using Soenneker.Cloudflare.Utils.Client.Registrars;
 
@@ -17,7 +18,7 @@ public static class CloudflareR2UtilRegistrar
     /// <returns>The same service collection so that additional registrations can be chained.</returns>
     public static IServiceCollection AddCloudflareR2UtilAsSingleton(this IServiceCollection services)
     {
-        services.AddCloudflareClientUtilAsSingleton().TryAddSingleton<ICloudflareR2Util, CloudflareR2Util>();
+        services.AddCloudflareClientUtilAsSingleton().AddAwsSignatureV4SignerAsSingleton().TryAddSingleton<ICloudflareR2Util, CloudflareR2Util>();
         return services;
     }
 
@@ -28,7 +29,7 @@ public static class CloudflareR2UtilRegistrar
     /// <returns>The same service collection so that additional registrations can be chained.</returns>
     public static IServiceCollection AddCloudflareR2UtilAsScoped(this IServiceCollection services)
     {
-        services.AddCloudflareClientUtilAsSingleton().TryAddScoped<ICloudflareR2Util, CloudflareR2Util>();
+        services.AddCloudflareClientUtilAsSingleton().AddAwsSignatureV4SignerAsSingleton().TryAddScoped<ICloudflareR2Util, CloudflareR2Util>();
         return services;
     }
 }

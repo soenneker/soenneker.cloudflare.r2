@@ -25,6 +25,12 @@ services.AddCloudflareR2UtilAsSingleton();
 // Or: services.AddCloudflareR2UtilAsScoped();
 ```
 
+The configured Cloudflare API key is used by default. Any management operation can use another key for that call:
+
+```csharp
+await r2.GetBucket(accountId, "assets", apiKey: tenantApiKey, cancellationToken: cancellationToken);
+```
+
 ## Usage
 
 ```csharp
@@ -41,11 +47,11 @@ public sealed class AssetStore
 
     public async ValueTask Upload(string accountId, Stream content, CancellationToken cancellationToken)
     {
-        await _r2.PutObject(accountId, "assets", "images/logo.png", content, "image/png", cancellationToken);
+        await _r2.PutObject(accountId, "assets", "images/logo.png", content, "image/png", cancellationToken: cancellationToken);
     }
 
     public ValueTask<Stream?> Download(string accountId, CancellationToken cancellationToken) =>
-        _r2.GetObject(accountId, "assets", "images/logo.png", cancellationToken);
+        _r2.GetObject(accountId, "assets", "images/logo.png", cancellationToken: cancellationToken);
 }
 ```
 
@@ -56,15 +62,31 @@ var response = await r2.ListObjects(accountId, "assets", query =>
 {
     query.Prefix = "images/";
     query.Limit = 100;
-}, cancellationToken);
+}, cancellationToken: cancellationToken);
 ```
 
 The caller owns streams returned by `GetObject`. Upload streams are read from their current position and are not disposed by the utility.
+
+Private objects can be shared for a limited time with an R2 access key ID and secret access key. Credentials are supplied per call, so the same utility instance can safely use different R2 credential sets:
+
+```csharp
+string downloadUrl = await r2.GetPresignedDownloadUrl(
+    accountId,
+    "assets",
+    "private/report.pdf",
+    accessKeyId,
+    secretAccessKey,
+    TimeSpan.FromMinutes(15),
+    cancellationToken: cancellationToken);
+```
+
+Pass the optional `sessionToken` when signing with temporary R2 credentials. Presigned URLs may remain valid from one second through seven days. URL signing is provided by `Soenneker.Aws.Signing.V4`; no Amazon SDK package is required.
 
 ## Supported operations
 
 - Create, list, inspect, update, and delete buckets
 - Upload, download, list, and delete objects, including bulk deletion
+- Generate time-limited download URLs for private objects using call-specific R2 credentials
 - Manage CORS, lifecycle, object lock, local uploads, and Sippy configuration
 - Manage custom domains and the R2-managed public domain
 - Read account-level metrics and create temporary access credentials

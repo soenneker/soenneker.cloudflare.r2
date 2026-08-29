@@ -1,22 +1,31 @@
 using Soenneker.Cloudflare.R2.Abstract;
+using Soenneker.Cloudflare.OpenApiClient;
 using Soenneker.Cloudflare.Utils.Client.Abstract;
+using Soenneker.Aws.Signing.V4;
+using Soenneker.Aws.Signing.V4.Abstract;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Soenneker.Cloudflare.R2;
 
-/// <summary>
-/// Provides convenient access to Cloudflare R2 bucket, object, configuration, domain, metrics, and temporary credential operations.
-/// </summary>
 public sealed partial class CloudflareR2Util : ICloudflareR2Util
 {
     private readonly ICloudflareClientUtil _clientUtil;
+    private readonly IAwsSignatureV4Signer _signatureV4Signer;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="CloudflareR2Util"/> class.
-    /// </summary>
-    /// <param name="clientUtil">The utility used to retrieve the authenticated Cloudflare API client.</param>
-    public CloudflareR2Util(ICloudflareClientUtil clientUtil)
+    public CloudflareR2Util(ICloudflareClientUtil clientUtil) : this(clientUtil, new AwsSignatureV4Signer())
     {
-        _clientUtil = clientUtil;
     }
 
+    public CloudflareR2Util(ICloudflareClientUtil clientUtil, IAwsSignatureV4Signer signatureV4Signer)
+    {
+        ArgumentNullException.ThrowIfNull(clientUtil);
+        ArgumentNullException.ThrowIfNull(signatureV4Signer);
+        _clientUtil = clientUtil;
+        _signatureV4Signer = signatureV4Signer;
+    }
+
+    private ValueTask<CloudflareOpenApiClient> GetClient(string? apiKey, CancellationToken cancellationToken) =>
+        apiKey is null ? _clientUtil.Get(cancellationToken) : _clientUtil.Get(apiKey, cancellationToken);
 }

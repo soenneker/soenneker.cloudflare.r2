@@ -16,27 +16,27 @@ public sealed partial class CloudflareR2Util
 {
     public async ValueTask<R2ListObjects200?> ListObjects(string accountId, string bucketName,
         Action<ObjectsRequestBuilder.ObjectsRequestBuilderGetQueryParameters>? configureQuery = null,
-        CancellationToken cancellationToken = default)
+        string? apiKey = null, CancellationToken cancellationToken = default)
     {
-        CloudflareOpenApiClient client = await _clientUtil.Get(cancellationToken).NoSync();
+        CloudflareOpenApiClient client = await GetClient(apiKey, cancellationToken).NoSync();
         return await client.Accounts[accountId].R2.Buckets[bucketName].Objects.GetAsync(
             config => configureQuery?.Invoke(config.QueryParameters), cancellationToken).NoSync();
     }
 
-    public async ValueTask<Stream?> GetObject(string accountId, string bucketName, string objectKey, CancellationToken cancellationToken = default)
+    public async ValueTask<Stream?> GetObject(string accountId, string bucketName, string objectKey, string? apiKey = null, CancellationToken cancellationToken = default)
     {
-        CloudflareOpenApiClient client = await _clientUtil.Get(cancellationToken).NoSync();
+        CloudflareOpenApiClient client = await GetClient(apiKey, cancellationToken).NoSync();
         return await client.Accounts[accountId].R2.Buckets[bucketName].Objects[objectKey].GetAsync(cancellationToken: cancellationToken).NoSync();
     }
 
     public async ValueTask<R2PutObject200?> PutObject(string accountId, string bucketName, string objectKey, Stream content,
-        string? contentType = null, CancellationToken cancellationToken = default)
+        string? contentType = null, string? apiKey = null, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(content);
         if (!content.CanRead)
             throw new ArgumentException("The content stream must be readable.", nameof(content));
 
-        CloudflareOpenApiClient client = await _clientUtil.Get(cancellationToken).NoSync();
+        CloudflareOpenApiClient client = await GetClient(apiKey, cancellationToken).NoSync();
         return await client.Accounts[accountId].R2.Buckets[bucketName].Objects[objectKey].PutAsync(content, config =>
         {
             if (!string.IsNullOrWhiteSpace(contentType))
@@ -45,18 +45,18 @@ public sealed partial class CloudflareR2Util
     }
 
     public async ValueTask<R2DeleteObject200?> DeleteObject(string accountId, string bucketName, string objectKey,
-        CancellationToken cancellationToken = default)
+        string? apiKey = null, CancellationToken cancellationToken = default)
     {
-        CloudflareOpenApiClient client = await _clientUtil.Get(cancellationToken).NoSync();
+        CloudflareOpenApiClient client = await GetClient(apiKey, cancellationToken).NoSync();
         return await client.Accounts[accountId].R2.Buckets[bucketName].Objects[objectKey].DeleteAsync(cancellationToken: cancellationToken).NoSync();
     }
 
     public async ValueTask<R2DeleteObjects200?> DeleteObjects(string accountId, string bucketName, IReadOnlyCollection<string> objectKeys,
-        CancellationToken cancellationToken = default)
+        string? apiKey = null, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(objectKeys);
         List<string> keys = objectKeys.ToList();
-        CloudflareOpenApiClient client = await _clientUtil.Get(cancellationToken).NoSync();
+        CloudflareOpenApiClient client = await GetClient(apiKey, cancellationToken).NoSync();
         return await client.Accounts[accountId].R2.Buckets[bucketName].Objects.DeleteAsync(keys, cancellationToken: cancellationToken).NoSync();
     }
 }
