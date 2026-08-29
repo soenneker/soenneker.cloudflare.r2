@@ -13,6 +13,8 @@ public static class CloudflareR2UtilRegistrar
     /// <summary>
     /// Adds <see cref="ICloudflareR2Util"/> as a singleton service.
     /// </summary>
+    /// <param name="services">The service collection to which the registrations are added.</param>
+    /// <returns>The same service collection so that additional registrations can be chained.</returns>
     public static IServiceCollection AddCloudflareR2UtilAsSingleton(this IServiceCollection services)
     {
         services.AddCloudflareClientUtilAsSingleton().TryAddSingleton<ICloudflareR2Util, CloudflareR2Util>();
@@ -22,10 +24,11 @@ public static class CloudflareR2UtilRegistrar
     /// <summary>
     /// Adds <see cref="ICloudflareR2Util"/> as a scoped service.
     /// </summary>
+    /// <param name="services">The service collection to which the registrations are added.</param>
+    /// <returns>The same service collection so that additional registrations can be chained.</returns>
     public static IServiceCollection AddCloudflareR2UtilAsScoped(this IServiceCollection services)
     {
         services.AddCloudflareClientUtilAsSingleton().TryAddScoped<ICloudflareR2Util, CloudflareR2Util>();
         return services;
     }
 }
-
