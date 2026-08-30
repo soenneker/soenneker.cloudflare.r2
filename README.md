@@ -16,7 +16,19 @@ dotnet add package Soenneker.Cloudflare.R2
 
 ## Registration
 
-Configure the Cloudflare credentials used by `Soenneker.Cloudflare.Utils.Client`, then register the utility:
+Configure a Cloudflare API token with the R2 permissions required by the operations your application performs:
+
+```json
+{
+  "Cloudflare": {
+    "ApiKey": "<Cloudflare API token>"
+  }
+}
+```
+
+The token is sent as a bearer credential for Cloudflare management API calls. Keep it in a secret provider rather than source control or a checked-in settings file.
+
+Then register the utility:
 
 ```csharp
 using Soenneker.Cloudflare.R2.Registrars;
@@ -25,7 +37,7 @@ services.AddCloudflareR2UtilAsSingleton();
 // Or: services.AddCloudflareR2UtilAsScoped();
 ```
 
-The configured Cloudflare API key is used by default. Any management operation can use another key for that call:
+The configured token is used by default. Any management operation can use another token for that call through the parameter named `apiKey`:
 
 ```csharp
 await r2.GetBucket(accountId, "assets", apiKey: tenantApiKey, cancellationToken: cancellationToken);
@@ -82,6 +94,8 @@ string downloadUrl = await r2.GetPresignedDownloadUrl(
 
 Pass the optional `sessionToken` when signing with temporary R2 credentials. Presigned URLs may remain valid from one second through seven days. URL signing is provided by `Soenneker.Aws.Signing.V4`; no Amazon SDK package is required.
 
+The R2 access key ID and secret access key used for presigning are S3-compatible R2 credentials. They are separate from the Cloudflare management API token in `Cloudflare:ApiKey`. Treat the complete presigned URL as a credential until it expires and do not log it.
+
 ## Supported operations
 
 - Create, list, inspect, update, and delete buckets
@@ -90,3 +104,10 @@ Pass the optional `sessionToken` when signing with temporary R2 credentials. Pre
 - Manage CORS, lifecycle, object lock, local uploads, and Sippy configuration
 - Manage custom domains and the R2-managed public domain
 - Read account-level metrics and create temporary access credentials
+
+## Behavior
+
+- Generated response bodies are nullable because Cloudflare may return no body for some successful operations.
+- Management API failures are surfaced through the generated Kiota client rather than converted to library-specific exceptions.
+- Per-call API tokens are cached by the underlying client utility for reuse. Prefer a bounded set of long-lived tokens rather than passing unbounded, one-off credentials through a singleton registration.
+- Cancellation is passed through client acquisition and the Cloudflare request. Presigned URL creation is local and observes cancellation before signing.
