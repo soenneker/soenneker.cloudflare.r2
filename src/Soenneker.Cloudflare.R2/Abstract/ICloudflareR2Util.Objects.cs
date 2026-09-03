@@ -1,5 +1,6 @@
 using Soenneker.Cloudflare.OpenApiClient.Accounts.Item.R2.Buckets.Item.Objects;
 using Soenneker.Cloudflare.OpenApiClient.Models;
+using Soenneker.Enums.JsonOptions;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -49,6 +50,53 @@ public partial interface ICloudflareR2Util
     /// <exception cref="ArgumentException"><paramref name="content"/> is not readable.</exception>
     ValueTask<R2PutObject200?> PutObject(string accountId, string bucketName, string objectKey, Stream content,
         string? contentType = null, string? apiKey = null, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Uploads a UTF-8 encoded string.
+    /// </summary>
+    /// <param name="accountId">The Cloudflare account identifier.</param>
+    /// <param name="bucketName">The name of the bucket.</param>
+    /// <param name="objectKey">The destination key for the object.</param>
+    /// <param name="content">The string to upload.</param>
+    /// <param name="contentType">The media type to send in the <c>Content-Type</c> header. Defaults to UTF-8 plain text.</param>
+    /// <param name="apiKey">An optional Cloudflare API key. When omitted, the configured default key is used.</param>
+    /// <param name="cancellationToken">The token used to cancel the operation.</param>
+    /// <returns>A value task containing the upload response, or <see langword="null"/> when the API returns no response body.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="content"/> is <see langword="null"/>.</exception>
+    ValueTask<R2PutObject200?> PutObject(string accountId, string bucketName, string objectKey, string content,
+        string? contentType = "text/plain; charset=utf-8", string? apiKey = null, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Uploads a byte array.
+    /// </summary>
+    /// <param name="accountId">The Cloudflare account identifier.</param>
+    /// <param name="bucketName">The name of the bucket.</param>
+    /// <param name="objectKey">The destination key for the object.</param>
+    /// <param name="content">The bytes to upload.</param>
+    /// <param name="contentType">The media type to send in the <c>Content-Type</c> header. Defaults to binary data.</param>
+    /// <param name="apiKey">An optional Cloudflare API key. When omitted, the configured default key is used.</param>
+    /// <param name="cancellationToken">The token used to cancel the operation.</param>
+    /// <returns>A value task containing the upload response, or <see langword="null"/> when the API returns no response body.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="content"/> is <see langword="null"/>.</exception>
+    ValueTask<R2PutObject200?> PutObject(string accountId, string bucketName, string objectKey, byte[] content,
+        string? contentType = "application/octet-stream", string? apiKey = null, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Serializes an object as UTF-8 JSON and uploads it.
+    /// </summary>
+    /// <param name="accountId">The Cloudflare account identifier.</param>
+    /// <param name="bucketName">The name of the bucket.</param>
+    /// <param name="objectKey">The destination key for the object.</param>
+    /// <param name="content">The object to serialize and upload.</param>
+    /// <param name="jsonOptionType">The JSON serialization options profile. Web defaults are used when omitted.</param>
+    /// <param name="contentType">The media type to send in the <c>Content-Type</c> header. Defaults to UTF-8 JSON.</param>
+    /// <param name="apiKey">An optional Cloudflare API key. When omitted, the configured default key is used.</param>
+    /// <param name="cancellationToken">The token used to cancel the operation.</param>
+    /// <returns>A value task containing the upload response, or <see langword="null"/> when the API returns no response body.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="content"/> is <see langword="null"/>.</exception>
+    ValueTask<R2PutObject200?> PutObject(string accountId, string bucketName, string objectKey, object content,
+        JsonOptionType? jsonOptionType = null, string? contentType = "application/json; charset=utf-8", string? apiKey = null,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Deletes an object.

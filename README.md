@@ -60,6 +60,14 @@ public sealed class AssetStore
     public async ValueTask Upload(string accountId, Stream content, CancellationToken cancellationToken)
     {
         await _r2.PutObject(accountId, "assets", "images/logo.png", content, "image/png", cancellationToken: cancellationToken);
+
+        await _r2.PutObject(accountId, "assets", "notes/readme.txt", "Uploaded from Leadping", cancellationToken: cancellationToken);
+
+        await _r2.PutObject(accountId, "assets", "metadata/logo.json", new
+        {
+            Name = "logo.png",
+            ContentType = "image/png"
+        }, cancellationToken: cancellationToken);
     }
 
     public ValueTask<Stream?> Download(string accountId, CancellationToken cancellationToken) =>
@@ -77,7 +85,7 @@ var response = await r2.ListObjects(accountId, "assets", query =>
 }, cancellationToken: cancellationToken);
 ```
 
-The caller owns streams returned by `GetObject`. Upload streams are read from their current position and are not disposed by the utility.
+The caller owns streams returned by `GetObject`. Upload streams are read from their current position and are not disposed by the utility. Strings are uploaded as UTF-8 plain text, byte arrays as binary data, and other objects are serialized as UTF-8 JSON by `JsonUtil` using its web defaults. Object uploads accept an optional `JsonOptionType`, and each overload allows its default content type to be replaced.
 
 Private objects can be shared for a limited time with an R2 access key ID and secret access key. Credentials are supplied per call, so the same utility instance can safely use different R2 credential sets:
 
