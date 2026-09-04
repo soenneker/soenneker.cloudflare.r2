@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace Soenneker.Cloudflare.R2;
 
+/// <inheritdoc cref="ICloudflareR2Util" />
 public sealed partial class CloudflareR2Util : ICloudflareR2Util
 {
     private readonly ICloudflareClientUtil _clientUtil;
