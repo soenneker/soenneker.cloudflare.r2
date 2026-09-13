@@ -43,8 +43,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Soenneker.Aws.Signing.V4" Version="4.0.11" />
-        <PackageReference Include="Soenneker.Cloudflare.Utils.Client" Version="4.0.1038" />
-        <PackageReference Include="Soenneker.Utils.Json" Version="4.0.2697" />
+        <PackageReference Include="Soenneker.Aws.Signing.V4" Version="4.0.12" />
+        <PackageReference Include="Soenneker.Cloudflare.Utils.Client" Version="4.0.1039" />
+        <PackageReference Include="Soenneker.Utils.Json" Version="4.0.2701" />
     </ItemGroup>
 </Project>
