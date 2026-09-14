@@ -61,7 +61,7 @@ public sealed class AssetStore
     {
         await _r2.PutObject(accountId, "assets", "images/logo.png", content, "image/png", cancellationToken: cancellationToken);
 
-        await _r2.PutObject(accountId, "assets", "notes/readme.txt", "Uploaded from Leadping", cancellationToken: cancellationToken);
+        await _r2.PutObject(accountId, "assets", "notes/readme.txt", "Uploaded from the application", cancellationToken: cancellationToken);
 
         await _r2.PutObject(accountId, "assets", "metadata/logo.json", new
         {
