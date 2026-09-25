@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization.Metadata;
 using Soenneker.Cloudflare.OpenApiClient.Accounts.Item.R2.Buckets.Item.Objects;
 using Soenneker.Cloudflare.OpenApiClient.Models;
 using Soenneker.Enums.JsonOptions;
@@ -88,14 +89,14 @@ public partial interface ICloudflareR2Util
     /// <param name="bucketName">The name of the bucket.</param>
     /// <param name="objectKey">The destination key for the object.</param>
     /// <param name="content">The object to serialize and upload.</param>
-    /// <param name="jsonOptionType">The JSON serialization options profile. Web defaults are used when omitted.</param>
+    /// <param name="typeInfo">Source-generated metadata and options for the uploaded content.</param>
     /// <param name="contentType">The media type to send in the <c>Content-Type</c> header. Defaults to UTF-8 JSON.</param>
     /// <param name="apiKey">An optional Cloudflare API key. When omitted, the configured default key is used.</param>
     /// <param name="cancellationToken">The token used to cancel the operation.</param>
     /// <returns>A value task containing the upload response, or <see langword="null"/> when the API returns no response body.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="content"/> is <see langword="null"/>.</exception>
-    ValueTask<R2PutObject200?> PutObject(string accountId, string bucketName, string objectKey, object content,
-        JsonOptionType? jsonOptionType = null, string? contentType = "application/json; charset=utf-8", string? apiKey = null,
+    ValueTask<R2PutObject200?> PutObject<T>(string accountId, string bucketName, string objectKey, T content,
+        JsonTypeInfo<T> typeInfo, string? contentType = "application/json; charset=utf-8", string? apiKey = null,
         CancellationToken cancellationToken = default);
 
     /// <summary>

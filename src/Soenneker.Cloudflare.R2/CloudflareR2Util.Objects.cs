@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization.Metadata;
 using Soenneker.Cloudflare.OpenApiClient;
 using Soenneker.Cloudflare.OpenApiClient.Accounts.Item.R2.Buckets.Item.Objects;
 using Soenneker.Cloudflare.OpenApiClient.Models;
@@ -66,13 +67,13 @@ public sealed partial class CloudflareR2Util
         return await PutObject(accountId, bucketName, objectKey, stream, contentType, apiKey, cancellationToken).NoSync();
     }
 
-    public async ValueTask<R2PutObject200?> PutObject(string accountId, string bucketName, string objectKey, object content,
-        JsonOptionType? jsonOptionType = null, string? contentType = "application/json; charset=utf-8", string? apiKey = null,
+    public async ValueTask<R2PutObject200?> PutObject<T>(string accountId, string bucketName, string objectKey, T content,
+        JsonTypeInfo<T> typeInfo, string? contentType = "application/json; charset=utf-8", string? apiKey = null,
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(content);
 
-        byte[] bytes = JsonUtil.SerializeToUtf8Bytes(content, jsonOptionType);
+        byte[] bytes = JsonUtil.SerializeToUtf8Bytes(content, typeInfo);
         await using var stream = new MemoryStream(bytes, writable: false);
         return await PutObject(accountId, bucketName, objectKey, stream, contentType, apiKey, cancellationToken).NoSync();
     }
