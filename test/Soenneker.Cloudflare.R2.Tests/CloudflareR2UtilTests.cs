@@ -17,7 +17,7 @@ public sealed class CloudflareR2UtilTests : HostedUnitTest
     }
 
     [Test]
-    public async Task GetPresignedDownloadUrl_should_include_target_credentials_and_expiration(CancellationToken cancellationToken)
+    public async ValueTask GetPresignedDownloadUrl_should_include_target_credentials_and_expiration(CancellationToken cancellationToken)
     {
         const string accessKeyId = "access-key-one";
 
@@ -31,7 +31,7 @@ public sealed class CloudflareR2UtilTests : HostedUnitTest
     }
 
     [Test]
-    public async Task GetPresignedDownloadUrl_should_support_temporary_credentials(CancellationToken cancellationToken)
+    public async ValueTask GetPresignedDownloadUrl_should_support_temporary_credentials(CancellationToken cancellationToken)
     {
         string url = await _util.GetPresignedDownloadUrl("account-id", "private-bucket", "report.pdf", "temporary-access-key",
             "temporary-secret-key", TimeSpan.FromMinutes(5), "temporary-session-token", cancellationToken);
@@ -41,7 +41,7 @@ public sealed class CloudflareR2UtilTests : HostedUnitTest
     }
 
     [Test]
-    public async Task GetPresignedDownloadUrl_should_reject_invalid_duration(CancellationToken cancellationToken)
+    public async ValueTask GetPresignedDownloadUrl_should_reject_invalid_duration(CancellationToken cancellationToken)
     {
         await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() =>
             _util.GetPresignedDownloadUrl("account-id", "private-bucket", "report.pdf", "access-key", "secret-key", TimeSpan.Zero, cancellationToken: cancellationToken).AsTask());
