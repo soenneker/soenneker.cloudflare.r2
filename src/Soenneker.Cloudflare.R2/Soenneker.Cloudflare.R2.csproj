@@ -47,6 +47,6 @@
         <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.12" />
         <PackageReference Include="Soenneker.Aws.Signing.V4" Version="4.0.23" />
         <PackageReference Include="Soenneker.Cloudflare.Utils.Client" Version="4.0.1063" />
-        <PackageReference Include="Soenneker.Utils.Json" Version="4.0.2735" />
+        <PackageReference Include="Soenneker.Utils.Json" Version="4.0.2738" />
     </ItemGroup>
 </Project>
