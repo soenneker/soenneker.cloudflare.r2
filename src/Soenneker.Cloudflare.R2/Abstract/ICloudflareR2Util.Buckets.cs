@@ -16,7 +16,7 @@ public partial interface ICloudflareR2Util
     /// <param name="apiKey">An optional Cloudflare API key. When omitted, the configured default key is used.</param>
     /// <param name="cancellationToken">The token used to cancel the operation.</param>
     /// <returns>A value task containing the bucket list response, or <see langword="null"/> when the API returns no response body.</returns>
-    ValueTask<R2ListBuckets200?> ListBuckets(string accountId,
+    ValueTask<R2ListBuckets200Response?> ListBuckets(string accountId,
         Action<BucketsRequestBuilder.BucketsRequestBuilderGetQueryParameters>? configureQuery = null,
         string? apiKey = null, CancellationToken cancellationToken = default);
 
@@ -28,7 +28,7 @@ public partial interface ICloudflareR2Util
     /// <param name="apiKey">An optional Cloudflare API key. When omitted, the configured default key is used.</param>
     /// <param name="cancellationToken">The token used to cancel the operation.</param>
     /// <returns>A value task containing the created bucket response, or <see langword="null"/> when the API returns no response body.</returns>
-    ValueTask<R2CreateBucket200?> CreateBucket(string accountId, R2CreateBucket request, string? apiKey = null, CancellationToken cancellationToken = default);
+    ValueTask<R2CreateBucket200Response?> CreateBucket(string accountId, R2CreateBucketRequest request, string? apiKey = null, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Gets an R2 bucket by name.
@@ -38,7 +38,7 @@ public partial interface ICloudflareR2Util
     /// <param name="apiKey">An optional Cloudflare API key. When omitted, the configured default key is used.</param>
     /// <param name="cancellationToken">The token used to cancel the operation.</param>
     /// <returns>A value task containing the bucket response, or <see langword="null"/> when the API returns no response body.</returns>
-    ValueTask<R2GetBucket200?> GetBucket(string accountId, string bucketName, string? apiKey = null, CancellationToken cancellationToken = default);
+    ValueTask<R2GetBucket200Response?> GetBucket(string accountId, string bucketName, string? apiKey = null, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Updates the mutable settings of an R2 bucket.
@@ -48,7 +48,7 @@ public partial interface ICloudflareR2Util
     /// <param name="apiKey">An optional Cloudflare API key. When omitted, the configured default key is used.</param>
     /// <param name="cancellationToken">The token used to cancel the operation.</param>
     /// <returns>A value task containing the updated bucket response, or <see langword="null"/> when the API returns no response body.</returns>
-    ValueTask<R2PatchBucket200?> UpdateBucket(string accountId, string bucketName, string? apiKey = null, CancellationToken cancellationToken = default);
+    ValueTask<R2PatchBucket200Response?> UpdateBucket(string accountId, string bucketName, string? apiKey = null, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Deletes an empty R2 bucket.
@@ -67,7 +67,7 @@ public partial interface ICloudflareR2Util
     /// <param name="apiKey">An optional Cloudflare API key. When omitted, the configured default key is used.</param>
     /// <param name="cancellationToken">The token used to cancel the operation.</param>
     /// <returns>A value task containing the account metrics response, or <see langword="null"/> when the API returns no response body.</returns>
-    ValueTask<R2GetAccountLevelMetrics200?> GetMetrics(string accountId, string? apiKey = null, CancellationToken cancellationToken = default);
+    ValueTask<R2GetAccountLevelMetrics200Response?> GetMetrics(string accountId, string? apiKey = null, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Creates temporary R2 access credentials.
@@ -77,6 +77,6 @@ public partial interface ICloudflareR2Util
     /// <param name="apiKey">An optional Cloudflare API key. When omitted, the configured default key is used.</param>
     /// <param name="cancellationToken">The token used to cancel the operation.</param>
     /// <returns>A value task containing the temporary credentials response, or <see langword="null"/> when the API returns no response body.</returns>
-    ValueTask<R2CreateTempAccessCredentials200?> CreateTemporaryAccessCredentials(string accountId, R2TempAccessCredsRequest request,
+    ValueTask<R2CreateTempAccessCredentials200Response?> CreateTemporaryAccessCredentials(string accountId, R2TempAccessCredsRequest request,
         string? apiKey = null, CancellationToken cancellationToken = default);
 }

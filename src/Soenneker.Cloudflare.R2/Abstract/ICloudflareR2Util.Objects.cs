@@ -21,7 +21,7 @@ public partial interface ICloudflareR2Util
     /// <param name="apiKey">An optional Cloudflare API key. When omitted, the configured default key is used.</param>
     /// <param name="cancellationToken">The token used to cancel the operation.</param>
     /// <returns>A value task containing the object list response, or <see langword="null"/> when the API returns no response body.</returns>
-    ValueTask<R2ListObjects200?> ListObjects(string accountId, string bucketName,
+    ValueTask<R2ListObjects200Response?> ListObjects(string accountId, string bucketName,
         Action<ObjectsRequestBuilder.ObjectsRequestBuilderGetQueryParameters>? configureQuery = null,
         string? apiKey = null, CancellationToken cancellationToken = default);
 
@@ -49,7 +49,7 @@ public partial interface ICloudflareR2Util
     /// <returns>A value task containing the upload response, or <see langword="null"/> when the API returns no response body.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="content"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException"><paramref name="content"/> is not readable.</exception>
-    ValueTask<R2PutObject200?> PutObject(string accountId, string bucketName, string objectKey, Stream content,
+    ValueTask<R2PutObject200Response?> PutObject(string accountId, string bucketName, string objectKey, Stream content,
         string? contentType = null, string? apiKey = null, CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -64,7 +64,7 @@ public partial interface ICloudflareR2Util
     /// <param name="cancellationToken">The token used to cancel the operation.</param>
     /// <returns>A value task containing the upload response, or <see langword="null"/> when the API returns no response body.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="content"/> is <see langword="null"/>.</exception>
-    ValueTask<R2PutObject200?> PutObject(string accountId, string bucketName, string objectKey, string content,
+    ValueTask<R2PutObject200Response?> PutObject(string accountId, string bucketName, string objectKey, string content,
         string? contentType = "text/plain; charset=utf-8", string? apiKey = null, CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -79,7 +79,7 @@ public partial interface ICloudflareR2Util
     /// <param name="cancellationToken">The token used to cancel the operation.</param>
     /// <returns>A value task containing the upload response, or <see langword="null"/> when the API returns no response body.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="content"/> is <see langword="null"/>.</exception>
-    ValueTask<R2PutObject200?> PutObject(string accountId, string bucketName, string objectKey, byte[] content,
+    ValueTask<R2PutObject200Response?> PutObject(string accountId, string bucketName, string objectKey, byte[] content,
         string? contentType = "application/octet-stream", string? apiKey = null, CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -95,7 +95,7 @@ public partial interface ICloudflareR2Util
     /// <param name="cancellationToken">The token used to cancel the operation.</param>
     /// <returns>A value task containing the upload response, or <see langword="null"/> when the API returns no response body.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="content"/> is <see langword="null"/>.</exception>
-    ValueTask<R2PutObject200?> PutObject<T>(string accountId, string bucketName, string objectKey, T content,
+    ValueTask<R2PutObject200Response?> PutObject<T>(string accountId, string bucketName, string objectKey, T content,
         JsonTypeInfo<T> typeInfo, string? contentType = "application/json; charset=utf-8", string? apiKey = null,
         CancellationToken cancellationToken = default);
 
@@ -108,7 +108,7 @@ public partial interface ICloudflareR2Util
     /// <param name="apiKey">An optional Cloudflare API key. When omitted, the configured default key is used.</param>
     /// <param name="cancellationToken">The token used to cancel the operation.</param>
     /// <returns>A value task containing the deletion response, or <see langword="null"/> when the API returns no response body.</returns>
-    ValueTask<R2DeleteObject200?> DeleteObject(string accountId, string bucketName, string objectKey,
+    ValueTask<R2DeleteObject200Response?> DeleteObject(string accountId, string bucketName, string objectKey,
         string? apiKey = null, CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -121,6 +121,6 @@ public partial interface ICloudflareR2Util
     /// <param name="cancellationToken">The token used to cancel the operation.</param>
     /// <returns>A value task containing the bulk deletion response, or <see langword="null"/> when the API returns no response body.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="objectKeys"/> is <see langword="null"/>.</exception>
-    ValueTask<R2DeleteObjects200?> DeleteObjects(string accountId, string bucketName, IReadOnlyCollection<string> objectKeys,
+    ValueTask<R2DeleteObjects200Response?> DeleteObjects(string accountId, string bucketName, IReadOnlyCollection<string> objectKeys,
         string? apiKey = null, CancellationToken cancellationToken = default);
 }

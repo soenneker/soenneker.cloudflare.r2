@@ -14,7 +14,7 @@ public partial interface ICloudflareR2Util
     /// <param name="apiKey">An optional Cloudflare API key. When omitted, the configured default key is used.</param>
     /// <param name="cancellationToken">The token used to cancel the operation.</param>
     /// <returns>A value task containing the custom domain list response, or <see langword="null"/> when the API returns no response body.</returns>
-    ValueTask<R2ListCustomDomains200?> ListCustomDomains(string accountId, string bucketName, string? apiKey = null, CancellationToken cancellationToken = default);
+    ValueTask<R2ListCustomDomains200Response?> ListCustomDomains(string accountId, string bucketName, string? apiKey = null, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Attaches a custom domain to a bucket.
@@ -25,7 +25,7 @@ public partial interface ICloudflareR2Util
     /// <param name="apiKey">An optional Cloudflare API key. When omitted, the configured default key is used.</param>
     /// <param name="cancellationToken">The token used to cancel the operation.</param>
     /// <returns>A value task containing the added custom domain response, or <see langword="null"/> when the API returns no response body.</returns>
-    ValueTask<R2AddCustomDomain200?> AddCustomDomain(string accountId, string bucketName, R2AddCustomDomainRequest request,
+    ValueTask<R2AddCustomDomain200Response?> AddCustomDomain(string accountId, string bucketName, R2AddCustomDomainRequest request,
         string? apiKey = null, CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -37,7 +37,7 @@ public partial interface ICloudflareR2Util
     /// <param name="apiKey">An optional Cloudflare API key. When omitted, the configured default key is used.</param>
     /// <param name="cancellationToken">The token used to cancel the operation.</param>
     /// <returns>A value task containing the custom domain settings response, or <see langword="null"/> when the API returns no response body.</returns>
-    ValueTask<R2GetCustomDomainSettings200?> GetCustomDomain(string accountId, string bucketName, string domain,
+    ValueTask<R2GetCustomDomainSettings200Response?> GetCustomDomain(string accountId, string bucketName, string domain,
         string? apiKey = null, CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -50,7 +50,7 @@ public partial interface ICloudflareR2Util
     /// <param name="apiKey">An optional Cloudflare API key. When omitted, the configured default key is used.</param>
     /// <param name="cancellationToken">The token used to cancel the operation.</param>
     /// <returns>A value task containing the updated custom domain response, or <see langword="null"/> when the API returns no response body.</returns>
-    ValueTask<R2EditCustomDomainSettings200?> UpdateCustomDomain(string accountId, string bucketName, string domain,
+    ValueTask<R2EditCustomDomainSettings200Response?> UpdateCustomDomain(string accountId, string bucketName, string domain,
         R2EditCustomDomainRequest request, string? apiKey = null, CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -62,7 +62,7 @@ public partial interface ICloudflareR2Util
     /// <param name="apiKey">An optional Cloudflare API key. When omitted, the configured default key is used.</param>
     /// <param name="cancellationToken">The token used to cancel the operation.</param>
     /// <returns>A value task containing the deletion response, or <see langword="null"/> when the API returns no response body.</returns>
-    ValueTask<R2DeleteCustomDomain200?> DeleteCustomDomain(string accountId, string bucketName, string domain,
+    ValueTask<R2DeleteCustomDomain200Response?> DeleteCustomDomain(string accountId, string bucketName, string domain,
         string? apiKey = null, CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -73,7 +73,7 @@ public partial interface ICloudflareR2Util
     /// <param name="apiKey">An optional Cloudflare API key. When omitted, the configured default key is used.</param>
     /// <param name="cancellationToken">The token used to cancel the operation.</param>
     /// <returns>A value task containing the managed domain policy response, or <see langword="null"/> when the API returns no response body.</returns>
-    ValueTask<R2GetBucketPublicPolicy200?> GetManagedDomain(string accountId, string bucketName, string? apiKey = null, CancellationToken cancellationToken = default);
+    ValueTask<R2GetBucketPublicPolicy200Response?> GetManagedDomain(string accountId, string bucketName, string? apiKey = null, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Updates the public access policy for the Cloudflare-managed domain of a bucket.
@@ -84,6 +84,6 @@ public partial interface ICloudflareR2Util
     /// <param name="apiKey">An optional Cloudflare API key. When omitted, the configured default key is used.</param>
     /// <param name="cancellationToken">The token used to cancel the operation.</param>
     /// <returns>A value task containing the updated managed domain policy response, or <see langword="null"/> when the API returns no response body.</returns>
-    ValueTask<R2PutBucketPublicPolicy200?> UpdateManagedDomain(string accountId, string bucketName, R2EditManagedDomainRequest request,
+    ValueTask<R2PutBucketPublicPolicy200Response?> UpdateManagedDomain(string accountId, string bucketName, R2EditManagedDomainRequest request,
         string? apiKey = null, CancellationToken cancellationToken = default);
 }
