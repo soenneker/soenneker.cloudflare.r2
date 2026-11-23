@@ -3,6 +3,7 @@ using Microsoft.Kiota.Abstractions;
 using Microsoft.Kiota.Abstractions.Serialization;
 using Soenneker.Cloudflare.OpenApiClient;
 using Soenneker.Cloudflare.OpenApiClient.Accounts.Item.R2.Buckets.Item.Objects;
+using Soenneker.Cloudflare.OpenApiClient.Accounts.Item.R2.Buckets.Item.Objects.Item;
 using Soenneker.Cloudflare.OpenApiClient.Models;
 using Soenneker.Enums.JsonOptions;
 using Soenneker.Extensions.Task;
@@ -29,11 +30,32 @@ public sealed partial class CloudflareR2Util
             config => configureQuery?.Invoke(config.QueryParameters), cancellationToken).NoSync();
     }
 
+    private static WithObjectKeyItemRequestBuilder GetObjectBuilder(CloudflareOpenApiClient client, string accountId, string bucketName, string objectKey)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(objectKey);
+        // System.Uri normalizes dot segments, which could address a different object.
+        foreach (Range range in objectKey.AsSpan().Split('/'))
+        {
+            ReadOnlySpan<char> segment = objectKey.AsSpan(range);
+            if (segment is "." or "..")
+                throw new ArgumentException("Dot segments cannot be sent as literal object key segments.", nameof(objectKey));
+        }
+
+        var objects = client.Accounts[accountId].R2.Buckets[bucketName].Objects;
+        var item = objects[objectKey];
+        if (!objectKey.Contains('/'))
+            return item;
+
+        // Kiota escapes the whole key as one template parameter. R2 requires literal slash separators.
+        string collectionUrl = objects.ToGetRequestInformation().URI.AbsoluteUri;
+        string keyPath = Uri.EscapeDataString(objectKey).Replace("%2F", "/", StringComparison.Ordinal);
+        return item.WithUrl($"{collectionUrl}/{keyPath}");
+    }
     public async ValueTask<Stream?> GetObject(string accountId, string bucketName, string objectKey, string? apiKey = null, CancellationToken cancellationToken = default)
     {
         CloudflareOpenApiClient client = await GetClient(apiKey, cancellationToken).NoSync();
         // The generated GET method discards the binary response body. Use the same adapter and error mapping to retain it.
-        RequestInformation request = client.Accounts[accountId].R2.Buckets[bucketName].Objects[objectKey].ToGetRequestInformation();
+        RequestInformation request = GetObjectBuilder(client, accountId, bucketName, objectKey).ToGetRequestInformation();
         var errorMapping = new Dictionary<string, ParsableFactory<IParsable>>
         {
             ["4XX"] = R2V4ResponseFailure.CreateFromDiscriminatorValue
@@ -52,7 +74,7 @@ public sealed partial class CloudflareR2Util
             throw new ArgumentException("The content stream must be readable.", nameof(content));
 
         CloudflareOpenApiClient client = await GetClient(apiKey, cancellationToken).NoSync();
-        return await client.Accounts[accountId].R2.Buckets[bucketName].Objects[objectKey].PutAsync(content, config =>
+        return await GetObjectBuilder(client, accountId, bucketName, objectKey).PutAsync(content, config =>
         {
             if (!string.IsNullOrWhiteSpace(contentType))
                 config.Headers.Add("Content-Type", contentType);
@@ -93,7 +115,7 @@ public sealed partial class CloudflareR2Util
         string? apiKey = null, CancellationToken cancellationToken = default)
     {
         CloudflareOpenApiClient client = await GetClient(apiKey, cancellationToken).NoSync();
-        return await client.Accounts[accountId].R2.Buckets[bucketName].Objects[objectKey].DeleteAsync(cancellationToken: cancellationToken).NoSync();
+        return await GetObjectBuilder(client, accountId, bucketName, objectKey).DeleteAsync(cancellationToken: cancellationToken).NoSync();
     }
 
     public async ValueTask<R2DeleteObjects200Response?> DeleteObjects(string accountId, string bucketName, IReadOnlyCollection<string> objectKeys,
