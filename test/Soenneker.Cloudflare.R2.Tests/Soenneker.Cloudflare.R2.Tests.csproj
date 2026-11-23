@@ -19,7 +19,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="NSubstitute" Version="5.3.0" />
         <PackageReference Include="Soenneker.Utils.Test" Version="11.0.348" />
         <PackageReference Include="Soenneker.Tests.HostedUnit" Version="11.0.392" />
         <PackageReference Include="TUnit" Version="1.87.12" />

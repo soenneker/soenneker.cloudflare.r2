@@ -4,8 +4,6 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
-using NSubstitute;
-using Soenneker.Cloudflare.HttpClient.Abstract;
 using Soenneker.Cloudflare.Utils.Client;
 
 namespace Soenneker.Cloudflare.R2.Tests;
@@ -17,8 +15,7 @@ public sealed class ObjectRequestTests
     {
         using var recorder = new ObjectRequestRecorder();
         using var http = new System.Net.Http.HttpClient(recorder) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-        var transport = Substitute.For<ICloudflareHttpClient>();
-        transport.Get("token", Arg.Any<CancellationToken>()).Returns(new ValueTask<System.Net.Http.HttpClient>(http));
+        var transport = new RecordingCloudflareHttpClient(http, "token");
         using var config = new ConfigurationManager();
         config["Cloudflare:ApiKey"] = "token";
         config["Cloudflare:RequestResponseLogging"] = "true";
